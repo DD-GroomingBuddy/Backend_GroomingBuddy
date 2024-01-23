@@ -15,7 +15,7 @@ app.get('/radnici', (req, res) => {
     res.json(data.korisnici);
   });
   
-  // Ruta za prikaz cjenika
+  // Ruta za prikaz cjenik
   app.get('/cjenik', (req, res) => {
     res.json(data.cjenik);
   });
