@@ -1,5 +1,7 @@
 import express from "express";
 import data from "./store.js";
+import { korisniciMethods } from "../handlers/korisnicihandler.js";
+import db from "./db.js";
 
 const app = express();
 const port = process.env.port || 3000;
@@ -11,9 +13,7 @@ app.get('/radnici', (req, res) => {
   });
   
   // Ruta za prikaz svih korisnika
-  app.get('/korisnici', (req, res) => {
-    res.json(data.korisnici);
-  });
+  app.get("/korisnici", korisniciMethods.getAllKorisnici);
   
   // Ruta za prikaz cjenik
   app.get('/cjenik', (req, res) => {
