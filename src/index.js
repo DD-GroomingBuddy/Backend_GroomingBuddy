@@ -1,4 +1,5 @@
-const express = require('express')
+import express from 'express';
+
 const cookieSession = require("cookie-session");
 
 const app = express();
