@@ -37,14 +37,39 @@ db.mongoose
     console.error("Connection error", err);
     process.exit();
   });
-app.listen(port, () => {
-  console.log(`Servis radi na portu ${port}`);
-});
 
 // app.use('/auth', authRoutes);
 // app.use('/protected', protectedRoute);
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
 
+function init() {
+  Role.estimatedDocumentCount((err, count) => {
+    if (!err && count === 0) {
+      new Role({
+        name: "user"
+      }).save(err => {
+        if (err) {
+          console.log("error", err);
+        }
 
-//dodat fuknciju za user catch error i admin
+        console.log("added 'user' to roles collection");
+      });
+
+      new Role({
+        name: "admin"
+      }).save(err => {
+        if (err) {
+          console.log("error", err);
+        }
+
+        console.log("added 'admin' to roles collection");
+      });
+    }
+  });
+}
+
+
+app.listen(port, () => {
+  console.log(`Servis radi na portu ${port}`);
+});
