@@ -6,6 +6,7 @@ const app = express();
 const port = process.env.port || 3000;
 const db = require("./models");
 const cors = require("cors");
+const Role = db.role;
 
 
 var corsOptions = {
@@ -39,3 +40,11 @@ db.mongoose
 app.listen(port, () => {
   console.log(`Servis radi na portu ${port}`);
 });
+
+// app.use('/auth', authRoutes);
+// app.use('/protected', protectedRoute);
+require('./routes/auth.routes')(app);
+require('./routes/user.routes')(app);
+
+
+//dodat fuknciju za user catch error i admin
