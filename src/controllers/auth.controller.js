@@ -12,3 +12,13 @@ exports.signup = (req, res) => {
     password: bcrypt.hashSync(req.body.password, 8),
   });
 }
+
+user.save((err, user) => { 
+  if (err) {
+    res.status(500).send({ message: err });
+    return;
+  }
+});
+
+
+//dodati role.find i exports za signin i signout//
