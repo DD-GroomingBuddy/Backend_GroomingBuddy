@@ -1,72 +1,72 @@
 const User = require("../models/user.model");
 const Appointment = require("../models/appointment.model")
-const User = db.user;
-const Role = db.role;
 
-var jwt = require("jsonwebtoken");
-var bcrypt = require("bcryptjs");
+exports.allAccess = (req, res) => {
+    res.status(200).send("Public Content.");
+  };
+  
+  exports.userBoard = (req, res) => {
+    res.status(200).send("User Content.");
+  };
+  
+  exports.adminBoard = (req, res) => {
+    res.status(200).send("Admin Content.");
+  };
+  
+  exports.appointmentAdd = (req, res) => {
+    const appointment = new Appointment({
+      // user: req.body.user,
+      phoneNumber: req.body.phoneNumber,
+      service: req.body.service,
+      date: req.body.date,
+      time: req.body.time
+    });
 
-exports.signup = (req, res) => {
-  const user = new User({
-    username: req.body.username,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8),
-  });
+    appointment.save((err, appointment) => {
+      if (err) {
+        res.status(500).send({message: err});
+        return;
+      }
 
-  user.save((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-
-    if (req.body.roles) {
-      Role.find(
-        {
-          name: { $in: req.body.roles },
-        },
-        (err, roles) => {
-          if (err) {
-            res.status(500).send({ message: err });
+      if(req.body.user){
+        User.findOne({id: req.body.user.id}, (err,user) =>{
+          if(err){
+            res.status(500).send({message: err})
             return;
           }
+          appointment.user = user
 
-          user.roles = roles.map((role) => role._id);
-          user.save((err) => {
-            if (err) {
+          appointment.save((err) => {
+            if(err){
               res.status(500).send({ message: err });
               return;
             }
-
-            res.send({ message: "User was registered successfully!" });
+            res.send({ message: "Appointment registered successfully" });
           });
-        }
-      );
-    } else {
-      Role.findOne({ name: "user" }, (err, role) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
+          });
+      }
+    });
+  };
 
-        user.roles = [role._id];
-        user.save((err) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
+  exports.getAppointments = (req,res) => {
+    Appointment.find({ user: req.query.userId })
+    .populate('user')
+    .exec((err, appointments) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      res.status(200).send(appointments);
+    });
+  };
 
-          res.send({ message: "User was registered successfully!" });
-        });
-      });
-    }
-  });
-};
-
-exports.signout = async (req, res) => {
-  try {
-    req.session = null;
-    return res.status(200).send({ message: "You've been signed out!" });
-  } catch (err) {
-    this.next(err);
+  exports.getAllAppointments = (req,res) => {
+    Appointment.find({})
+    .exec((err, appointments) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      res.status(200).send(appointments);
+    });
   }
-};
