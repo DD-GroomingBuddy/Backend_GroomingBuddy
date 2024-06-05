@@ -11,7 +11,7 @@ module.exports = function(app) {
     next();
   });
 
-  app.post("/api/appointment/add", [authJwt.verifyToken],controller.appointmentAdd)
+  app.post("/api/appointment/add", [authJwt.verifyToken],controller.appointmentAdd);
 
   app.get("/api/appointment/get", [authJwt.verifyToken], controller.getAppointments);
 
@@ -20,6 +20,10 @@ module.exports = function(app) {
   app.get("/api/test/all", controller.allAccess);
 
   app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);
+
+  app.post("/api/contact", authJwt.allAccess ,controller.sendEmail);
+
+  app.delete("/api/appointment/delete", [authJwt.verifyToken, authJwt.isAdmin], controller.appointmentDelete);
 
   app.get(
     "/api/test/admin",

@@ -1,12 +1,11 @@
-import express from 'express';
-
+const express = require('express')
 const cookieSession = require("cookie-session");
 
 const app = express();
 const port = process.env.port || 3000;
 const db = require("./models");
-const cors = require("cors");
 const Role = db.role;
+const cors = require("cors");
 
 
 var corsOptions = {
