@@ -10,9 +10,9 @@
 
 ## Linkovi
 
-- **Stranica**: ()
-- **Dokumentacija**: ()
-- **Prezentacija**: ()
+- **Stranica**: [GroomingBuddy]()
+- **Dokumentacija**: [GroomingBuddy Dokumentacija](https://drive.google.com/file/d/1ktaN5UyF_jnTfcN8gS5WtQLE-Zg1bX2g/view?usp=share_link)
+- **Prezentacija**: [GroomingBuddy Prezentacija](https://drive.google.com/file/d/1gF1_yov51qDc-yJQOK6VJV13B2eRMWBN/view?usp=share_link)
 
 ## Uvod
 
