@@ -21,7 +21,7 @@ module.exports = function(app) {
 
   app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);
 
-  app.post("/api/contact", authJwt.allAccess ,controller.sendEmail);
+  app.post("/api/contact", controller.sendEmail);
 
   app.delete("/api/appointment/delete", [authJwt.verifyToken, authJwt.isAdmin], controller.appointmentDelete);
 

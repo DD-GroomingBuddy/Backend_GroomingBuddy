@@ -1,18 +1,24 @@
 {
   "name": "groomingbuddy-backend",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "type": "module",
+  "type": "commonjs",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
-    "express": "^4.18.2",
+    "description": "^0.0.4",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.5.0",
-    "mongoose": "^8.4.0"
-  },
-  "description": ""
+    "mongoose": "^8.4.0",
+    "nodemailer": "^6.9.13"
+  }
 }
