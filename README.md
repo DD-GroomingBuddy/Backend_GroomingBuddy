@@ -10,7 +10,7 @@
 
 ## Linkovi
 
-- **Stranica**: [GroomingBuddy]()
+- **Stranica**: [GroomingBuddy](https://youtu.be/s33WOAPISOg)
 - **Dokumentacija**: [GroomingBuddy Dokumentacija](https://drive.google.com/file/d/1-xRefYvY5A-T3fJAO19Pkk8GfmOKUe-o/view?usp=sharing)
 - **Prezentacija**: [GroomingBuddy Prezentacija](https://drive.google.com/file/d/1ope2pt9rt9NUwlSh5Dnh6MR0fU16rle5/view?usp=sharing)
 
