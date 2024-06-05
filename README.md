@@ -11,8 +11,8 @@
 ## Linkovi
 
 - **Stranica**: [GroomingBuddy]()
-- **Dokumentacija**: [GroomingBuddy Dokumentacija](https://drive.google.com/file/d/1ktaN5UyF_jnTfcN8gS5WtQLE-Zg1bX2g/view?usp=share_link)
-- **Prezentacija**: [GroomingBuddy Prezentacija](https://drive.google.com/file/d/1gF1_yov51qDc-yJQOK6VJV13B2eRMWBN/view?usp=share_link)
+- **Dokumentacija**: [GroomingBuddy Dokumentacija](https://drive.google.com/file/d/1-xRefYvY5A-T3fJAO19Pkk8GfmOKUe-o/view?usp=sharing)
+- **Prezentacija**: [GroomingBuddy Prezentacija](https://drive.google.com/file/d/1ope2pt9rt9NUwlSh5Dnh6MR0fU16rle5/view?usp=sharing)
 
 ## Uvod
 
