@@ -1,128 +1,121 @@
-const User = require("../models/user.model");
-const Appointment = require("../models/appointment.model")
-const Role = require("../models/role.model")
-const nodemailer = require('nodemailer');
+const config = require("../config/auth.config");
+const db = require("../models");
+const User = db.user;
+const Role = db.role;
 
+var jwt = require("jsonwebtoken");
+var bcrypt = require("bcryptjs");
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'groomingbuddyy@gmail.com',
-    pass: 'naiasrseoalhreqc',
-  },
-});
+exports.signup = (req, res) => {
+  const user = new User({
+    username: req.body.username,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password, 8),
+  });
 
-const adminRole = Role.findOne({name: 'admin'});
-
-
-exports.allAccess = (req, res) => {
-    res.status(200).send("Public Content.");
-  };
-  
-  exports.userBoard = (req, res) => {
-    res.status(200).send("User Content.");
-  };
-  
-  exports.adminBoard = (req, res) => {
-    res.status(200).send("Admin Content.");
-  };
-
-  exports.appointmentDelete = async (req, res) => {
-    try {
-      const appointmentId = req.params.id;
-  
-      const deletedAppointment = await Appointment.findByIdAndRemove(appointmentId);
-  
-      if (!deletedAppointment) {
-        return res.status(404).send({ message: 'Appointment not found' });
-      }
-  
-      res.status(200).send({ message: 'Appointment deleted successfully' });
-    } catch (err) {
-      console.error('Error deleting appointment:', err);
-      res.status(500).send({ message: 'Failed to delete appointment' });
+  user.save((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
     }
 
-  };
-  
-  exports.appointmentAdd = (req, res) => {
-    const appointment = new Appointment({
-      user: req.body.user,
-      phoneNumber: req.body.phoneNumber,
-      service: req.body.service,
-      date: req.body.date,
-      time: req.body.time
-    });
-
-    appointment.save((err, appointment) => {
-      if (err) {
-        res.status(500).send({message: err});
-        return;
-      }
-
-      if(req.body.user){
-        User.findOne({id: req.body.user.id}, (err,user) =>{
-          if(err){
-            res.status(500).send({message: err})
+    if (req.body.roles) {
+      Role.find(
+        {
+          name: { $in: req.body.roles },
+        },
+        (err, roles) => {
+          if (err) {
+            res.status(500).send({ message: err });
             return;
           }
-          appointment.user = user
 
-          appointment.save((err) => {
-            if(err){
+          user.roles = roles.map((role) => role._id);
+          user.save((err) => {
+            if (err) {
               res.status(500).send({ message: err });
               return;
             }
-            res.send({ message: "Appointment registered successfully" });
+
+            res.send({ message: "User was registered successfully!" });
           });
-          });
-      }
-    });
-  };
+        }
+      );
+    } else {
+      Role.findOne({ name: "user" }, (err, role) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
 
-  exports.getAppointments = (req,res) => {
-    Appointment.find({ user: req.query.userId })
-    .populate('user')
-    .exec((err, appointments) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-      res.status(200).send(appointments);
-    });
-  };
+        user.roles = [role._id];
+        user.save((err) => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
 
-  exports.getAllAppointments = (req,res) => {
-    Appointment.find({})
-    .exec((err, appointments) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-      res.status(200).send(appointments);
-    });
-  }
-
-  exports.sendEmail = async (req, res) => {
-    try {
-      let admins = await User.find({ role: adminRole._id }).exec();
-
-      const adminEmails = admins.map(admin => admin.email).join(',');
-  
-      const mailOptions = {
-        from: req.email,
-        to: adminEmails,
-        subject: `Contact Form Submission from ${req.body.firstName} ${req.body.lastName}`,
-        text: req.body.message,
-      };
-  
-      // Send email
-      let info = await transporter.sendMail(mailOptions);
-      console.log('Message sent: %s', info.messageId);
-  
-      res.status(200).send({ message: 'Email sent successfully' });
-    } catch (err) {
-      console.error('Error sending email:', err);
-      res.status(500).send({ message: 'Failed to send email' });
+          res.send({ message: "User was registered successfully!" });
+        });
+      });
     }
-  };
+  });
+};
+
+exports.signin = (req, res) => {
+  User.findOne({
+    username: req.body.username,
+  })
+    .populate("roles", "-__v")
+    .exec((err, user) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      if (!user) {
+        return res.status(404).send({ message: "User Not found." });
+      }
+
+      var passwordIsValid = bcrypt.compareSync(
+        req.body.password,
+        user.password
+      );
+
+      if (!passwordIsValid) {
+        return res.status(401).send({ message: "Invalid Password!" });
+      }
+
+      const token = jwt.sign({ id: user.id },
+                              config.secret,
+                              {
+                                algorithm: 'HS256',
+                                allowInsecureKeySizes: true,
+                                expiresIn: 86400, // 24 hours
+                              });
+
+      var authorities = [];
+
+      for (let i = 0; i < user.roles.length; i++) {
+        authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
+      }
+
+      req.session.token = token;
+
+      res.status(200).send({
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        roles: authorities,
+      });
+    });
+};
+
+exports.signout = async (req, res) => {
+  try {
+    req.session = null;
+    return res.status(200).send({ message: "You've been signed out!" });
+  } catch (err) {
+    this.next(err);
+  }
+};
