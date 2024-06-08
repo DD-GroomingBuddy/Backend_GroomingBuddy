@@ -1,4 +1,4 @@
-const express = require('express')
+const express = require("express");
 const cookieSession = require("cookie-session");
 
 const app = express();
@@ -7,10 +7,11 @@ const db = require("./models");
 const Role = db.role;
 const cors = require("cors");
 
-
 var corsOptions = {
-  origin: "http://localhost:8080"
+  origin: "http://localhost:8080", 
+  optionsSuccessStatus: 200         
 };
+
 
 app.use(cors(corsOptions));
 
@@ -19,35 +20,38 @@ app.use(
   cookieSession({
     name: "GroomingBuddy",
     keys: ["SECRET"], // should use as secret environment variable
-    httpOnly: true
+    httpOnly: true,
   })
 );
 // Database innit
 db.mongoose
-  .connect("mongodb+srv://test:test@clustertest.hehtbr4.mongodb.net/?retryWrites=true&w=majority&appName=ClusterTest", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
+  .connect(
+    "mongodb+srv://test:test@clustertest.hehtbr4.mongodb.net/?retryWrites=true&w=majority&appName=ClusterTest",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => {
     console.log("Successfully connect to MongoDB.");
     init();
   })
-  .catch(err => {
+  .catch((err) => {
     console.error("Connection error", err);
     process.exit();
   });
 
 // app.use('/auth', authRoutes);
 // app.use('/protected', protectedRoute);
-require('./routes/auth.routes')(app);
-require('./routes/user.routes')(app);
+require("./routes/auth.routes")(app);
+require("./routes/user.routes")(app);
 
 function init() {
   Role.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
       new Role({
-        name: "user"
-      }).save(err => {
+        name: "user",
+      }).save((err) => {
         if (err) {
           console.log("error", err);
         }
@@ -56,8 +60,8 @@ function init() {
       });
 
       new Role({
-        name: "admin"
-      }).save(err => {
+        name: "admin",
+      }).save((err) => {
         if (err) {
           console.log("error", err);
         }
@@ -67,7 +71,6 @@ function init() {
     }
   });
 }
-
 
 app.listen(port, () => {
   console.log(`Servis radi na portu ${port}`);
