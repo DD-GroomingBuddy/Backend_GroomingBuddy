@@ -4,14 +4,12 @@ const Appointment = mongoose.model(
   "Appointment",
   new mongoose.Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     phoneNumber: String,
     service: String,
-    date: Date,
-    time: Date
-
+    dateTime: Date,
   })
 );
 
