@@ -7,11 +7,12 @@ const db = require("./models");
 const Role = db.role;
 const cors = require("cors");
 
-var corsOptions = {
-  origin: "https://groomingbuddy.netlify.app", 
-  optionsSuccessStatus: 200         
+const corsOptions = {
+  origin: ['http://localhost:8080', 'https://groomingbuddy.netlify.app/'], 
+  methods: ['GET', 'POST', 'PATCH'],  
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200 
 };
-
 
 app.use(cors(corsOptions));
 
