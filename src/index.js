@@ -8,7 +8,7 @@ const Role = db.role;
 const cors = require("cors");
 
 var corsOptions = {
-  origin: "http://localhost:8080", 
+  origin: "https://groomingbuddy.netlify.app", 
   optionsSuccessStatus: 200         
 };
 
