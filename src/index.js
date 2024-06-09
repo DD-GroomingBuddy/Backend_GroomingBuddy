@@ -8,7 +8,7 @@ const Role = db.role;
 const cors = require("cors");
 
 var corsOptions = {
-  origin: "http://localhost:8080", 
+  origin: "http://192.168.0.182:8080", 
   optionsSuccessStatus: 200         
 };
 

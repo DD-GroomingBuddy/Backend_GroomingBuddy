@@ -2,6 +2,8 @@ const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
+const Appointment = db.appointment;
+
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -86,13 +88,11 @@ exports.signin = (req, res) => {
         return res.status(401).send({ message: "Invalid Password!" });
       }
 
-      const token = jwt.sign({ id: user.id },
-                              config.secret,
-                              {
-                                algorithm: 'HS256',
-                                allowInsecureKeySizes: true,
-                                expiresIn: 86400, // 24 hours
-                              });
+      const token = jwt.sign({ id: user.id }, config.secret, {
+        algorithm: "HS256",
+        allowInsecureKeySizes: true,
+        expiresIn: 86400, // 24 hours
+      });
 
       var authorities = [];
 
@@ -107,6 +107,7 @@ exports.signin = (req, res) => {
         username: user.username,
         email: user.email,
         roles: authorities,
+        accessToken: token
       });
     });
 };
@@ -118,4 +119,91 @@ exports.signout = async (req, res) => {
   } catch (err) {
     this.next(err);
   }
+};
+
+
+exports.appointmentDelete = async (req, res) => {
+  try {
+    const appointmentId = req.body.id;
+    console.log(appointmentId)
+
+    const deletedAppointment = await Appointment.findByIdAndRemove(
+      appointmentId
+    );
+
+    if (!deletedAppointment) {
+      return res.status(404).send({ message: "Appointment not found" });
+    }
+
+    res.status(200).send({ message: "Appointment deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting appointment:", err);
+    res.status(500).send({ message: "Failed to delete appointment" });
+  }
+};
+
+exports.appointmentAdd = (req, res) => {
+  const newDateTime = new Date(req.body.dateTime);
+  
+  const appointment = new Appointment({
+    user: req.body.user.id,
+    phoneNumber: req.body.phoneNumber,
+    service: req.body.service,
+    dateTime: newDateTime
+  });
+
+  appointment.save((err, appointment) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (req.body.user) {
+      User.findOne({ _id: req.body.user.id }, (err, user) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+        appointment.user = user;
+
+        appointment.save((err) => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+          res.send({ message: "Appointment registered successfully" });
+        });
+      });
+    }
+  });
+};
+
+exports.getAppointments = (req, res) => {
+  Appointment.find({ user: req.query.userId })
+    .populate({
+      path: 'user',
+      select: 'username email' // Specify the fields you want to include
+    })
+    .exec((err, appointments) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      res.status(200).send(appointments);
+    });
+};
+
+exports.getAllAppointments = (req, res) => {
+  Appointment.find({})
+  .populate({
+    path: 'user',
+    select: 'username email' // Specify the fields you want to include
+  })
+  .exec((err, appointments) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+    res.status(200).send(appointments);
+  });
 };
