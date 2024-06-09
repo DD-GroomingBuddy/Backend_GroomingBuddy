@@ -1,14 +1,15 @@
 const express = require("express");
-const cors = require("cors");
 const cookieSession = require("cookie-session");
 
 const app = express();
-const port = process.env.PORT || 3000; 
+const port = process.env.port || 3000;
 const db = require("./models");
+const Role = db.role;
+const cors = require("cors");
 
 var corsOptions = {
-  origin: ['http://localhost:8080', 'https://groomingbuddy.netlify.app'], 
-  optionsSuccessStatus: 200
+  origin: ['http://localhost:8080', 'https://groomingbuddy.netlify.app/'], 
+  optionSuccessStatus:200
 };
 
 app.use(cors(corsOptions));
