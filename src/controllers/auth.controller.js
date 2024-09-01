@@ -207,3 +207,23 @@ exports.getAllAppointments = (req, res) => {
     res.status(200).send(appointments);
   });
 };
+
+exports.updateAppointmentStatus = async (req, res) => {
+  try {
+    const appointmentId = req.body.id;
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      { status: "Completed" },
+      { new: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).send({ message: "Appointment not found" });
+    }
+
+    res.status(200).send({ message: "Appointment status updated to Completed", appointment: updatedAppointment });
+  } catch (err) {
+    console.error("Error updating appointment status:", err);
+    res.status(500).send({ message: "Failed to update appointment status" });
+  }
+};

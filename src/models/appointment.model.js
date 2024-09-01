@@ -10,6 +10,7 @@ const Appointment = mongoose.model(
     phoneNumber: String,
     service: String,
     dateTime: Date,
+    status: String,
   })
 );
 
