@@ -149,7 +149,8 @@ exports.appointmentAdd = (req, res) => {
     user: req.body.user.id,
     phoneNumber: req.body.phoneNumber,
     service: req.body.service,
-    dateTime: newDateTime
+    dateTime: newDateTime,
+    status: "Not Completed"
   });
 
   appointment.save((err, appointment) => {

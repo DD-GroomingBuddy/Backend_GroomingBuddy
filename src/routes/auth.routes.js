@@ -47,7 +47,7 @@ module.exports = function (app) {
     controller.appointmentDelete
   );
 
-  router.put(
+  app.put(
     "api/auth/appointment/updateStatus",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.updateAppointmentStatus
