@@ -48,7 +48,7 @@ module.exports = function (app) {
   );
 
   app.put(
-    "api/auth/appointment/updateStatus",
+    "/api/auth/appointment/updateStatus",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.updateAppointmentStatus
   );

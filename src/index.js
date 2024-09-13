@@ -74,3 +74,4 @@ function init() {
 app.listen(port, () => {
   console.log(`Servis radi na portu ${port}`);
 });
+
